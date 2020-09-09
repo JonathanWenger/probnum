@@ -220,6 +220,8 @@ class Normal(_random_variable.ContinuousRandomVariable[_ValueType]):
 
                 if cov._ABequal:
                     sample = self._symmetric_kronecker_identical_factors_sample
+                    pdf = self._symmetric_kronecker_identical_factors_pdf
+                    logpdf = self._symmetric_kronecker_identical_factors_logpdf
 
                     # pylint: disable=redefined-variable-type
                     self._compute_cov_cholesky = (
@@ -239,6 +241,9 @@ class Normal(_random_variable.ContinuousRandomVariable[_ValueType]):
                         "shape as the mean."
                     )
 
+                sample = self._kronecker_sample
+                pdf = self._kronecker_pdf
+                logpdf = self._kronecker_logpdf
                 self._compute_cov_cholesky = self._kronecker_cov_cholesky
         else:
             raise ValueError(
@@ -555,6 +560,15 @@ class Normal(_random_variable.ContinuousRandomVariable[_ValueType]):
             dtype=self.dtype,
         )
 
+    def _kronecker_sample(self, size: ShapeType = ()) -> np.ndarray:
+        raise NotImplementedError
+
+    def _kronecker_pdf(self, x: _ValueType) -> np.float_:
+        raise NotImplementedError
+
+    def _kronecker_logpdf(self, x: _ValueType) -> np.float_:
+        raise NotImplementedError
+
     # Matrixvariate Gaussian with symmetric Kronecker covariance from identical
     # factors
     def _symmetric_kronecker_identical_factors_cov_cholesky(
@@ -593,3 +607,9 @@ class Normal(_random_variable.ContinuousRandomVariable[_ValueType]):
 
         # TODO: can we avoid todense here and just return operator samples?
         return self.dense_mean[None, :, :] + samples_scaled.T.reshape(-1, n, n)
+
+    def _symmetric_kronecker_identical_factors_pdf(self, x: _ValueType) -> np.float_:
+        raise NotImplementedError
+
+    def _symmetric_kronecker_identical_factors_logpdf(self, x: _ValueType) -> np.float_:
+        raise NotImplementedError
