@@ -36,12 +36,12 @@ jobs:
 
           git config --local user.name "bumpversion-bot"
           git add setup.cfg
-          git commit -m "Automatic version bump to ${VERSION}. Triggered on release via GitHub Actions."
+          git commit -m "Automatic version bump to ${VERSION} [skip ci]"
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.ACTIONS_TOKEN }}
-          force: false
+          force: true
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
